@@ -9,11 +9,11 @@ class Todo {
     this.io = getSocketIo()!;
     this.io.on("connection", (socket: Socket) => {
       console.log("New client connected");
-      socket.on("addToDo", (data) => this.handleAddTodo(socket, data));
+      socket.on("addTodo", (data) => this.handleAddTodo(socket, data));
       socket.on("deleteTodo", (data) => this.handleDeleteTodo(socket, data));
-      socket.on("updateTodoStatus", (data) =>
-        this.handleUpdateTodoStatus(socket, data)
-      );
+      socket.on("updateTodoStatus", (data) =>this.handleUpdateTodoStatus(socket, data))
+      socket.on("fetchTodos",()=>this.fetchTodo(socket))
+      
     });
   }
   private async handleAddTodo(socket: Socket, data: ITodo) {
@@ -31,7 +31,7 @@ class Todo {
         data: todos,
       });
     } catch (error) {
-      socket.emit("todo_response", {
+      socket.emit("todos_response", {
         status: "error",
         error,
       });
@@ -43,19 +43,19 @@ class Todo {
       const { id } = data;
       const deletedData = await todoModel.findByIdAndDelete(id);
       if (!deletedData) {
-        socket.emit("todo_response", {
+        socket.emit("todos_response", {
           status: "success",
           data: "todo not found",
         });
         return;
       }
       const todos = await todoModel.find({ status: EStatus.Pending });
-      socket.emit("todo_updated", {
+      socket.emit("todos_updated", {
         status: "success",
         data: todos,
       });
     } catch (error) {
-      socket.emit("todo_resposne", {
+      socket.emit("todos_resposne", {
         status: "error",
         error,
       });
@@ -68,24 +68,40 @@ class Todo {
       const todo = await todoModel.findByIdAndUpdate(id, { status });
 
       if (!todo) {
-        socket.emit("todo_response", {
+        socket.emit("todos_response", {
           status: "error",
           message: "Todo not found",
         });
         return;
       }
       const todos = await todoModel.find({ status: EStatus.Pending });
-      socket.emit("todo_updated", {
+      socket.emit("todos_updated", {
         status: "success",
         message: todos,
       });
     } catch (error) {
-      socket.emit("todo_resposne", {
+      socket.emit("todos_resposne", {
         status: "error",
         error,
       });
     }
   }
+
+  private async fetchTodo(socket:Socket){
+try {
+    const todos = await todoModel.find({status : EStatus.Pending})
+    socket.emit("todos_updated",{
+        status : "success",
+        data : todos
+    })
+} catch (error) {
+    socket.emit("todos_resposne",{
+        status :"Error",
+        error
+    })
+}
+  }
+
 }
 export default new Todo();
 
