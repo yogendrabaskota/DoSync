@@ -5,30 +5,26 @@ import {Server} from 'socket.io'
 
 
 
+let io:Server | undefined;
 function startServer(){
     connectDB()
     const port = envconfig.port || 4000
     const server = app.listen(port, ()=>{
         console.log(`server started successfully at ${port} `)
     })
-    const io = new Server(server)
-    io.on("connection",(socket)=>{
+    io = new Server(server)
 
-        // send data to bcackend
-        socket.on("firstdata",(data)=>{
-            console.log(data)
-            socket.emit("resp",{
-                message : "I have received data"
-            })
-
-        })
-
-        //console.log(socket.id)
-        console.log("someone connected")
-    })
-
-
-
-
+       
 }
+
+function getSocketIo() {
+    if(!io){
+        throw new Error("Socket io is not initiated yet")
+    }else{
+    return io
+    }
+}
+
+
 startServer()
+ export {getSocketIo}
