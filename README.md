@@ -75,29 +75,35 @@ npm start
 
 ## Project Structure
 ```bash
-src/
+project-root/
 │
-├── config/
-│   ├── config.ts       
-│   └── db.ts  
+├── src/
+│   ├── config/
+│   │   ├── config.ts       
+│   │   └── db.ts  
+│   │
+│   ├── controllers/
+│   │   └── todoController.ts        
+│   │
+│   ├── models/
+│   │   └── todoModel.ts            
+│   │
+│   ├── types/
+│   │   └── todoType.ts
+│   │
+│   ├── views/
+│   │   └── home.ejs
+│   │
+│   └── App.ts
 │
-├── controllers/
-│   └── todoControllers.ts        
-│
-├── models/
-│   └── todoModels.ts            
-│       
-├── types/
-│   └── todoTypes.ts
-│
-├── views/
-│   └── home.ejs
-│
-├── App.ts                             
-├── server.ts                 
-└── package.json
-```
+├── server.ts
+├── package.json
+├── tsconfig.json
+├── .env
+├── .gitignore
+└── README.md
 
+```
 
 
 
@@ -110,6 +116,7 @@ src/
 
 ## Feedback
   If you have any feedback, please reach out to me at yogendrabaskota18@gmail.com  
+
 
 
 
